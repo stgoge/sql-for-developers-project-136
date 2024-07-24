@@ -18,8 +18,8 @@ create table courses (
 	id bigint primary key generated always as identity,
 	title varchar (50) not null,
 	description varchar not null,
-	created_at timestamp not null default CURRENT_TIMESTAMP,
-	edited_at timestamp not null default CURRENT_TIMESTAMP,
+	created_at timestamp not null default current_timestamp,
+	edited_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
 
@@ -30,8 +30,8 @@ create table lessons (
 	content varchar not null,
 	vudeo_url varchar(100) not null,
 	position int null,
-	created_at timestamp not null default CURRENT_TIMESTAMP,
-	edited_at timestamp not null default CURRENT_TIMESTAMP,
+	created_at timestamp not null default current_timestamp,
+	edited_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
 
@@ -40,8 +40,8 @@ create table programs (
 	title varchar not null,
 	price int not null,
 	type varchar(20) not null,
-	created_at timestamp not null default CURRENT_TIMESTAMP,
-	edited_at timestamp not null default CURRENT_TIMESTAMP
+	created_at timestamp not null default current_timestamp,
+	edited_at timestamp not null default current_timestamp
 );
 
 create table modules (
@@ -49,8 +49,8 @@ create table modules (
 	program_id bigint references programs (id) not null,
 	title varchar(50) not null,
 	description varchar not null,
-	created_at timestamp not null default CURRENT_TIMESTAMP,
-	edited_at timestamp not null default CURRENT_TIMESTAMP,
+	created_at timestamp not null default current_timestamp,
+	edited_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
 
@@ -63,8 +63,8 @@ create table module_courses (
 create table teaching_groups (
 	id bigint primary key generated always as identity,
 	slug varchar(50) not null,
-	created_at timestamp not null default CURRENT_TIMESTAMP,
-	edited_at timestamp not null default CURRENT_TIMESTAMP
+	created_at timestamp not null default current_timestamp,
+	edited_at timestamp not null default current_timestamp
 );
 
 create type user_roles as enum ('студент', 'учитель', 'админ');
@@ -76,8 +76,8 @@ create table users (
 	password_hash varchar(255) not null,
 	teaching_group_id bigint references teaching_groups (id) not null,
 	role user_roles not null,
-	created_at timestamp not null default CURRENT_TIMESTAMP,
-	edited_at timestamp not null default CURRENT_TIMESTAMP,
+	created_at timestamp not null default current_timestamp,
+	edited_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
 
@@ -88,7 +88,7 @@ create table enrollments (
 	user_id bigint references users (id),
 	program_id bigint references programs (id),
 	enrollment_status enrollment_statuses not null,
-	created_at timestamp default CURRENT_TIMESTAMP
+	created_at timestamp default current_timestamp
 );
 
 create type payment_statuses as enum ('pending', 'paid', 'failed', 'refunded');
@@ -98,9 +98,9 @@ create table payments (
 	enrollment_id bigint references enrollments (id) not null,
 	payment_status payment_statuses not null,
 	cost int not null,
-	payment_date timestamp default CURRENT_TIMESTAMP,
-	created_at timestamp default CURRENT_TIMESTAMP,
-	edited_at  timestamp default CURRENT_TIMESTAMP
+	payment_date timestamp default current_timestamp,
+	created_at timestamp default current_timestamp,
+	edited_at  timestamp default current_timestamp
 );
 
 create type program_status as enum ('active', 'completed', 'pending', 'cancelled');
@@ -112,8 +112,8 @@ create table program_completions (
 	status program_status not null,
 	started_at timestamp not null,
 	completed_at timestamp,
-	created_at timestamp default current_timestamp,
-	edited_at timestamp default current_timestamp
+	created_at timestamp default current_timestamp not null,
+	edited_at timestamp default current_timestamp not null
 	
 );
 
@@ -122,7 +122,7 @@ create table certificates (
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
 	link varchar(100) not null,
-	certificate_date timestamp default current_timestamp,
-	created_at timestamp default current_timestamp,
-	edited_at timestamp default current_timestamp
+	certificate_date timestamp default current_timestamp not null,
+	created_at timestamp default current_timestamp not null,
+	edited_at timestamp default current_timestamp not null
 );
