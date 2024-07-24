@@ -27,12 +27,13 @@ create table courses (
 	description varchar not null,
 	created_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
 
 create table lessons (
 	id bigint primary key generated always as identity,
-	course_id bigint references courses (id) not null,
+	course_id bigint references courses (id),
 	title varchar (50) not null,
 	content varchar not null,
 	vudeo_url varchar(100) not null,
@@ -44,9 +45,9 @@ create table lessons (
 
 create table programs (
 	id bigint primary key generated always as identity,
-	title varchar not null,
+	name varchar not null,
 	price int not null,
-	type varchar(20) not null,
+	program_type varchar(20) not null,
 	created_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp
 );
