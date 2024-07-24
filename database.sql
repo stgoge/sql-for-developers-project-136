@@ -40,6 +40,7 @@ create table lessons (
 	position int null,
 	created_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
 
@@ -59,6 +60,7 @@ create table modules (
 	title varchar(50) not null,
 	description varchar not null,
 	created_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp,
 	deleted_at timestamp
 );
