@@ -1,3 +1,5 @@
+drop table if exists quizzes;
+drop table if exists exercises;
 drop table if exists lessons;
 drop table if exists module_courses;
 drop table if exists courses;
@@ -123,6 +125,24 @@ create table certificates (
 	program_id bigint references programs (id) not null,
 	link varchar(100) not null,
 	certificate_date timestamp default current_timestamp not null,
+	created_at timestamp default current_timestamp not null,
+	edited_at timestamp default current_timestamp not null
+);
+
+create table quizzes (
+	id bigint primary key generated always as identity,
+	lesson_id bigint references lessons (id) not null,
+	title varchar(50) not null,
+	content varchar not null,
+	created_at timestamp default current_timestamp not null,
+	edited_at timestamp default current_timestamp not null
+);
+
+create table exercises (
+	id bigint primary key generated always as identity,
+	lesson_id bigint references lessons (id) not null,
+	title varchar(50) not null,
+	link varchar(100) not null,
 	created_at timestamp default current_timestamp not null,
 	edited_at timestamp default current_timestamp not null
 );
