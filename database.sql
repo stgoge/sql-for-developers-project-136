@@ -36,7 +36,7 @@ create table lessons (
 	course_id bigint references courses (id),
 	title varchar (50) not null,
 	content varchar not null,
-	vudeo_url varchar(100) not null,
+	video_url varchar(100),
 	position int null,
 	created_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp,
@@ -49,12 +49,13 @@ create table programs (
 	price int not null,
 	program_type varchar(20) not null,
 	created_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp
 );
 
 create table modules (
 	id bigint primary key generated always as identity,
-	program_id bigint references programs (id) not null,
+	program_id bigint references programs (id),
 	title varchar(50) not null,
 	description varchar not null,
 	created_at timestamp not null default current_timestamp,
