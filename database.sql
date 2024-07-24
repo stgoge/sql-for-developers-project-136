@@ -1,3 +1,7 @@
+drop table if exists discussion_messages;
+drop table if exists blog;
+drop table if exists discussions; 
+drop table if exists quiz_questions;
 drop table if exists quizzes;
 drop table if exists exercises;
 drop table if exists lessons;
@@ -14,7 +18,8 @@ drop table if exists teaching_groups;
 drop type if exists user_roles;
 drop type if exists enrollment_statuses;
 drop type if exists payment_statuses;
-drop type if exists program_status;
+drop type if exists program_statuses;
+drop type if exists blog_statuses;
 
 create table courses (
 	id bigint primary key generated always as identity,
@@ -105,13 +110,13 @@ create table payments (
 	edited_at  timestamp default current_timestamp
 );
 
-create type program_status as enum ('active', 'completed', 'pending', 'cancelled');
+create type program_statuses as enum ('active', 'completed', 'pending', 'cancelled');
 
 create table program_completions (
 	id bigint primary key generated always as identity,
 	user_id bigint references users (id) not null,
 	program_id bigint references programs (id) not null,
-	status program_status not null,
+	status program_statuses not null,
 	started_at timestamp not null,
 	completed_at timestamp,
 	created_at timestamp default current_timestamp not null,
@@ -133,9 +138,15 @@ create table quizzes (
 	id bigint primary key generated always as identity,
 	lesson_id bigint references lessons (id) not null,
 	title varchar(50) not null,
-	content varchar not null,
 	created_at timestamp default current_timestamp not null,
 	edited_at timestamp default current_timestamp not null
+);
+
+create table quiz_questions (
+	id bigint primary key generated always as identity,
+	quiz_id bigint references quizzes (id) not null,
+	content varchar not null,
+	next_question bigint
 );
 
 create table exercises (
@@ -143,6 +154,33 @@ create table exercises (
 	lesson_id bigint references lessons (id) not null,
 	title varchar(50) not null,
 	link varchar(100) not null,
+	created_at timestamp default current_timestamp not null,
+	edited_at timestamp default current_timestamp not null
+);
+
+create table discussions (
+	id bigint primary key generated always as identity,
+	lesson_id bigint references lessons (id) not null,
+	messages varchar not null,
+	created_at timestamp default current_timestamp not null,
+	edited_at timestamp default current_timestamp not null
+);
+
+create table discussion_messages (
+	id bigint primary key generated always as identity,
+	discussion_id bigint references discussions (id),
+	parent_message bigint,
+	content varchar not null
+);
+
+create type blog_statuses as enum  ('created', 'in moderation', 'published', 'archived');
+
+create table blog (
+	id bigint primary key generated always as identity,
+	user_id bigint references users (id) not null,
+	title varchar(50) not null,
+	content varchar not null,
+	status blog_statuses not null,
 	created_at timestamp default current_timestamp not null,
 	edited_at timestamp default current_timestamp not null
 );
