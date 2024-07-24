@@ -2,17 +2,24 @@ drop table if exists lessons;
 drop table if exists module_courses;
 drop table if exists courses;
 drop table if exists modules;
+drop table if exists payments;
+drop table if exists enrollments;
+drop table if exists program_completions;
+drop table if exists certificates;
 drop table if exists programs;
 drop table if exists users;
-drop table if exists user_roles;
 drop table if exists teaching_groups;
+drop type if exists user_roles;
+drop type if exists enrollment_statuses;
+drop type if exists payment_statuses;
+drop type if exists program_status;
 
 create table courses (
 	id bigint primary key generated always as identity,
 	title varchar (50) not null,
 	description varchar not null,
-	created_at timestamp not null,
-	edited_at timestamp not null,
+	created_at timestamp not null default CURRENT_TIMESTAMP,
+	edited_at timestamp not null default CURRENT_TIMESTAMP,
 	deleted_at timestamp
 );
 
@@ -23,8 +30,8 @@ create table lessons (
 	content varchar not null,
 	vudeo_url varchar(100) not null,
 	position int null,
-	created_at timestamp not null,
-	edited_at timestamp not null,
+	created_at timestamp not null default CURRENT_TIMESTAMP,
+	edited_at timestamp not null default CURRENT_TIMESTAMP,
 	deleted_at timestamp
 );
 
@@ -33,8 +40,8 @@ create table programs (
 	title varchar not null,
 	price int not null,
 	type varchar(20) not null,
-	created_at timestamp not null,
-	edited_at timestamp not null
+	created_at timestamp not null default CURRENT_TIMESTAMP,
+	edited_at timestamp not null default CURRENT_TIMESTAMP
 );
 
 create table modules (
@@ -42,8 +49,8 @@ create table modules (
 	program_id bigint references programs (id) not null,
 	title varchar(50) not null,
 	description varchar not null,
-	created_at timestamp not null,
-	edited_at timestamp not null,
+	created_at timestamp not null default CURRENT_TIMESTAMP,
+	edited_at timestamp not null default CURRENT_TIMESTAMP,
 	deleted_at timestamp
 );
 
@@ -56,14 +63,11 @@ create table module_courses (
 create table teaching_groups (
 	id bigint primary key generated always as identity,
 	slug varchar(50) not null,
-	created_at timestamp not null,
-	edited_at timestamp not null
+	created_at timestamp not null default CURRENT_TIMESTAMP,
+	edited_at timestamp not null default CURRENT_TIMESTAMP
 );
 
-create table user_roles (
-	id bigint primary key generated always as identity,
-	role varchar(50) not null
-);
+create type user_roles as enum ('студент', 'учитель', 'админ');
 
 create table users (
 	id bigint primary key generated always as identity,
@@ -71,9 +75,54 @@ create table users (
 	email varchar(50) not null unique,
 	password_hash varchar(255) not null,
 	teaching_group_id bigint references teaching_groups (id) not null,
-	role bigint references user_roles (id) not null,
-	created_at timestamp not null,
-	edited_at timestamp not null,
+	role user_roles not null,
+	created_at timestamp not null default CURRENT_TIMESTAMP,
+	edited_at timestamp not null default CURRENT_TIMESTAMP,
 	deleted_at timestamp
 );
 
+create type enrollment_statuses as enum ('active', 'pending', 'cancelled', 'completed');
+
+create table enrollments (
+	id bigint primary key generated always as identity,
+	user_id bigint references users (id),
+	program_id bigint references programs (id),
+	enrollment_status enrollment_statuses not null,
+	created_at timestamp default CURRENT_TIMESTAMP
+);
+
+create type payment_statuses as enum ('pending', 'paid', 'failed', 'refunded');
+
+create table payments (
+	id bigint primary key generated always as identity,
+	enrollment_id bigint references enrollments (id) not null,
+	payment_status payment_statuses not null,
+	cost int not null,
+	payment_date timestamp default CURRENT_TIMESTAMP,
+	created_at timestamp default CURRENT_TIMESTAMP,
+	edited_at  timestamp default CURRENT_TIMESTAMP
+);
+
+create type program_status as enum ('active', 'completed', 'pending', 'cancelled');
+
+create table program_completions (
+	id bigint primary key generated always as identity,
+	user_id bigint references users (id) not null,
+	program_id bigint references programs (id) not null,
+	status program_status not null,
+	started_at timestamp not null,
+	completed_at timestamp,
+	created_at timestamp default current_timestamp,
+	edited_at timestamp default current_timestamp
+	
+);
+
+create table certificates (
+	id bigint primary key generated always as identity,
+	user_id bigint references users (id) not null,
+	program_id bigint references programs (id) not null,
+	link varchar(100) not null,
+	certificate_date timestamp default current_timestamp,
+	created_at timestamp default current_timestamp,
+	edited_at timestamp default current_timestamp
+);
