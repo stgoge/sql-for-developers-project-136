@@ -7,6 +7,7 @@ drop table if exists exercises;
 drop table if exists lessons;
 drop table if exists module_courses;
 drop table if exists courses;
+drop table if exists program_modules;
 drop table if exists modules;
 drop table if exists payments;
 drop table if exists enrollments;
@@ -56,13 +57,17 @@ create table programs (
 
 create table modules (
 	id bigint primary key generated always as identity,
-	program_id bigint references programs (id),
 	title varchar(50) not null,
 	description varchar not null,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp,
 	edited_at timestamp not null default current_timestamp,
 	deleted_at timestamp
+);
+
+create table program_modules (
+	program_id bigint references programs (id),
+	module_id bigint references modules (id)
 );
 
 create table module_courses (
