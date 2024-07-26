@@ -67,7 +67,8 @@ create table modules (
 
 create table program_modules (
 	program_id bigint references programs (id),
-	module_id bigint references modules (id)
+	module_id bigint references modules (id),
+	primary key(program_id, module_id)
 );
 
 create table module_courses (
