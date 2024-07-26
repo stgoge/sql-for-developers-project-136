@@ -66,9 +66,9 @@ create table modules (
 );
 
 create table module_courses (
-	id bigint primary key generated always as identity,
 	module_id bigint references modules (id) not null,
-	course_id bigint references courses (id) not null
+	course_id bigint references courses (id) not null,
+	primary key (course_id, module_id)
 );
 
 create table teaching_groups (
